@@ -242,6 +242,19 @@ func (cml *CanMessageListener) StopListening(interfaceName string) error {
 }
 
 func bytesToHexArray(data []byte) []string {
+	// TODO: use hex.Encode
+	// if len(data) == 0 {
+	// 	return []string{}
+	// }
+
+	// dest := make([]byte, len(data)*2)
+	// hex.Encode(dest, data)
+
+	// hexArray := make([]string, len(data))
+	// for i := range len(data) {
+	// 	hexArray[i] = string(dest[i*2 : i*2+2])
+	// }
+
 	hexArray := make([]string, len(data))
 	for i, b := range data {
 		hexArray[i] = fmt.Sprintf("%02X", b)

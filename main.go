@@ -49,6 +49,7 @@ func (s *Service) Initialize() error {
 		return fmt.Errorf("configuration validation failed: %w", err)
 	}
 
+	// TODO: Duplicate config for service
 	s.config = config
 	s.configProvider = NewDefaultConfigProvider(config)
 
@@ -62,7 +63,7 @@ func (s *Service) Initialize() error {
 		return fmt.Errorf("failed to initialize components: %w", err)
 	}
 
-	// Setup CAN interfaces (new step)
+	// Setup CAN interfaces
 	if err := s.setupCanInterfaces(); err != nil {
 		s.logger.Printf("Warning: CAN interface setup issues: %v", err)
 		// We continue even if some interfaces failed to setup
@@ -92,6 +93,7 @@ func (s *Service) initializeComponents() error {
 	commandExecutor := NewSystemCommandExecutor()
 
 	// Create interface setup manager
+	// TODO: use setup config from commandline flags?
 	setupConfig := DefaultInterfaceSetupConfig()
 	s.setupManager = NewInterfaceSetupManager(setupConfig, commandExecutor, s.logger)
 
@@ -109,11 +111,12 @@ func (s *Service) initializeComponents() error {
 	// Create message sender
 	s.messageSender = NewMessageSender(s.interfaceManager, s.configProvider, socketProvider, s.logger)
 
-	// Create message listener (new component)
+	// Create message listener
 	maxMessages := 100 // Configure maximum messages per interface
 	s.messageListener = NewCanMessageListener(maxMessages, s.logger)
 
 	// Create watchdog
+	// TODO: use watchdog config from commandline flags?
 	watchdogConfig := DefaultWatchdogConfig()
 	s.watchdog = NewWatchdog(s.interfaceManager, watchdogConfig, s.logger)
 
@@ -144,6 +147,7 @@ func (s *Service) setupCanInterfaces() error {
 		s.logger.Printf("📡 Available CAN interfaces: %v", available)
 	}
 
+	// TODO: use errors.Join?
 	var setupErrors []string
 	successCount := 0
 
@@ -183,6 +187,7 @@ func (s *Service) setupCanInterfaces() error {
 func (s *Service) startMessageListening() error {
 	s.logger.Printf("👂 Starting message listening for active interfaces...")
 
+	// TODO: use errors.Join?
 	var listeningErrors []string
 	successCount := 0
 
@@ -265,6 +270,7 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 
 	// Start Node Finder in a separate goroutine
+	// TODO: use service finder config from commandline flags?
 	if s.config.EnableFinder {
 		go NodeFinder(s.config.SetupFinderInterval)
 	}
@@ -311,7 +317,7 @@ func (s *Service) Stop(ctx context.Context) error {
 		s.interfaceManager.Cleanup()
 	}
 
-	// Teardown CAN interfaces (new step)
+	// Teardown CAN interfaces
 	if s.setupManager != nil {
 		s.teardownCanInterfaces()
 	}

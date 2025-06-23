@@ -646,7 +646,7 @@ func MatchID(userHex string, id uint32) bool {
 		userHex = strings.TrimPrefix(strings.ToLower(userHex), "0x")
 		parsedID, err = strconv.ParseUint(userHex, 16, 32)
 		if err != nil {
-			fmt.Println("❌ 无法解析 hex 参数:", err)
+			fmt.Println("❌ 无法解析 hex 参数：", err)
 			return false
 		}
 
@@ -654,7 +654,7 @@ func MatchID(userHex string, id uint32) bool {
 		// 如果没有 "0x" 前缀，直接尝试解析为十进制
 		parsedID, err = strconv.ParseUint(userHex, 10, 32)
 		if err != nil {
-			fmt.Println("❌ 无法解析十进制参数:", err)
+			fmt.Println("❌ 无法解析十进制参数：", err)
 			return false
 		}
 	}
